@@ -20,19 +20,15 @@
     
     	<h:outputText value="#{navController.breadcrumbTrail}" />	
 
-		<c:if test="#{flowScope.baselineAddSG != null}">
+		
 	        <c:choose>
-	            <c:when test="#{flowScope.baselineAddSG}">
+	            <c:when test="#{not empty flowScope.baselineAddSG and flowScope.baselineAddSG}">
 	                <h1>#{msg.socialGroupHead}</h1>
 	            </c:when>
 	            <c:otherwise>
 	                <h1>#{msg.individualCreate}</h1>
 	            </c:otherwise>
 	        </c:choose>
-        </c:if>
-        <c:otherwise>
-        	<h1>#{msg.individualCreate}</h1>
-        </c:otherwise>
 
         <h:messages id="errors" globalOnly="true" />
         <h:form id="individualForm">
