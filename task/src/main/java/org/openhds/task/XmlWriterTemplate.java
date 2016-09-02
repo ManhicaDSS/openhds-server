@@ -1,9 +1,6 @@
 package org.openhds.task;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -11,6 +8,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 
+import net.manhica.io.writers.ZipMaker;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.openhds.domain.util.CalendarAdapter;
 import org.openhds.task.service.AsyncTaskService;
@@ -92,12 +90,28 @@ public abstract class XmlWriterTemplate<T> implements XmlWriterTask {
             String md5 = DigestUtils.md5Hex(inputStream);
             inputStream.close();
             if (!taskName.startsWith("Form")){
-            asyncTaskService.finishTask(taskName, itemsWritten, md5);
+                asyncTaskService.finishTask(taskName, itemsWritten, md5);
+                //zip file using zipmaker and TaskContext
+                zipCurrentXml(taskContext);
+                asyncTaskService.finishTask(taskName, itemsWritten, md5);
             }
         } catch (Exception e) {
             System.out.println(e);
         } 
 
+    }
+
+    private void zipCurrentXml(TaskContext taskContext){
+        File xmlFile = taskContext.getDestinationFile();
+        File zipFile = ZipMaker.changeExtToZip(xmlFile);
+
+        System.out.println("Zipping "+xmlFile.getName()+" file");
+
+        ZipMaker zipMaker = new ZipMaker(zipFile);
+        zipMaker.addFile(xmlFile);
+        boolean result = zipMaker.makeZip();
+
+        System.out.println("Finished Zipping ");
     }
 
     protected abstract T makeCopyOf(T original);

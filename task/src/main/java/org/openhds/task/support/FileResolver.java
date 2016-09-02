@@ -16,4 +16,16 @@ public interface FileResolver {
     
     File resolveFormXmlFile();
 
+    File resolveIndividualZipFile();
+
+    File resolveLocationZipFile();
+
+    File resolveRelationshipZipFile();
+
+    File resolvesocialGroupZipFile();
+
+    File resolveVisitZipFile();
+
+    File resolveFormZipFile();
+
 }
